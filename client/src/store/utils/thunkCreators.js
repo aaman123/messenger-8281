@@ -95,15 +95,24 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => (dispatch) => {
   try {
-    const data = saveMessage(body);
+    
+    /*
+    the promise did not resolve fully, so the data variable was 
+    undefined which was not adding the latest message in redux store,
+    attaching all the subsequent calls in (then) block solved the problem.
+    */
 
-    if (!body.conversationId) {
-      dispatch(addConversation(body.recipientId, data.message));
-    } else {
-      dispatch(setNewMessage(data.message));
-    }
+    saveMessage(body).then((result) => {
 
-    sendMessage(data, body);
+      if (!body.conversationId) {
+        dispatch(addConversation(body.recipientId, result.message));
+      } else {
+        dispatch(setNewMessage(result.message));
+      }
+
+      sendMessage(result,body)
+    })
+
   } catch (error) {
     console.error(error);
   }
