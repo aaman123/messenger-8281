@@ -101,9 +101,8 @@ export const postMessage = (body) => (dispatch) => {
     undefined which was not adding the latest message in redux store,
     attaching all the subsequent calls in (then) block solved the problem.
     */
-
     saveMessage(body).then((result) => {
-
+      
       if (!body.conversationId) {
         dispatch(addConversation(body.recipientId, result.message));
       } else {
