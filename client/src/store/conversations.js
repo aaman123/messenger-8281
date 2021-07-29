@@ -4,12 +4,14 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  addUpdatedMessageToStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
 
 const GET_CONVERSATIONS = "GET_CONVERSATIONS";
 const SET_MESSAGE = "SET_MESSAGE";
+const SET_MESSAGE_STATUS = "SET_MESSAGE_STATUS";
 const ADD_ONLINE_USER = "ADD_ONLINE_USER";
 const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
@@ -67,6 +69,16 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
+/*
+  ACTION implemented when message status is updated in the database
+*/
+export const setMessageStatuses = (conversationId, id) => {
+    return {
+      type: SET_MESSAGE_STATUS,
+      updatedMessages: {conversationId, id}
+    }
+  }
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -91,6 +103,9 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
+    case SET_MESSAGE_STATUS: {
+      return addUpdatedMessageToStore(state, action.updatedMessages);
+    }
     default:
       return state;
   }

@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { setMessageStatus } from '../../store/utils/thunkCreators';
 import { connect } from "react-redux";
 
 const styles = {
@@ -17,16 +18,34 @@ const styles = {
       cursor: "grab",
     },
   },
+  unread: {
+    background: "#3A8DFF",
+    color: "#FFF",
+    borderRadius: 10,
+    height: 20,
+    padding: "0 6px",
+    fontWeight: "bold",
+    textAlign:"center",
+  }
 };
 
 class Chat extends Component {
+
   handleClick = async (conversation) => {
     await this.props.setActiveChat(conversation.otherUser.username);
+
+    if (conversation.id) {
+      const filterUnreadMessages = conversation.messages.filter(message => !message.messageRead);
+      if (filterUnreadMessages.length > 0) {
+        this.props.setMessageStatus(conversation.id, filterUnreadMessages.map(message => message.id));
+      }
+    }
   };
 
   render() {
     const { classes } = this.props;
     const otherUser = this.props.conversation.otherUser;
+
     return (
       <Box
         onClick={() => this.handleClick(this.props.conversation)}
@@ -38,9 +57,15 @@ class Chat extends Component {
           online={otherUser.online}
           sidebar={true}
         />
-        <ChatContent conversation={this.props.conversation} />
+        <ChatContent conversation={this.props.conversation}/>
       </Box>
     );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    updatedMessages: state.conversations
   }
 }
 
@@ -49,7 +74,10 @@ const mapDispatchToProps = (dispatch) => {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
+    setMessageStatus: (convoId, messageIds) => {
+      dispatch(setMessageStatus({convoId, messageIds}))
+    }
   };
 };
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Chat));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Chat));

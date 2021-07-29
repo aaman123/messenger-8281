@@ -48,7 +48,7 @@ class Home extends Component {
     return (
       <>
         {/* logout button will eventually be in a dropdown next to username */}
-        <Button className={classes.logout} onClick={this.handleLogout}>
+        <Button className={classes.logout} color="primary" variant="outlined" p={5} size="small" onClick={this.handleLogout}>
           Logout
         </Button>
         <Grid container component="main" className={classes.root}>

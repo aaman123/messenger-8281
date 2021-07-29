@@ -8,19 +8,26 @@ const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     flexGrow: 8,
-    flexDirection: "column"
+    flexDirection: "column",
+    marginRight: 30
   },
   chatContainer: {
     marginLeft: 41,
-    marginRight: 41,
+    marginRight: -17,
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    height: "50px",
+    overflowY: 'auto'
+  },
+  messages: {
+    marginRight: 5
   }
 }));
 
 const ActiveChat = (props) => {
+
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
@@ -34,17 +41,17 @@ const ActiveChat = (props) => {
             online={conversation.otherUser.online || false}
           />
           <Box className={classes.chatContainer}>
-            <Messages
+            <Messages className={classes.messages} 
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
-            <Input
+          </Box>
+          <Input
               otherUser={conversation.otherUser}
               conversationId={conversation.id}
               user={user}
-            />
-          </Box>
+          />
         </>
       )}
     </Box>

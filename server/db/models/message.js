@@ -6,6 +6,10 @@ const Message = db.define("message", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  messageRead: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false
+  },
   senderId: {
     type: Sequelize.INTEGER,
     allowNull: false,

@@ -35,6 +35,35 @@ export const addMessageToStore = (state, payload) => {
   });
 };
 
+/*
+  Author: Aman Sutariya
+  Type: Reducer for message update
+  Functionality: Takes the previous state and update message status according to the ids in the payload
+  Dependencies: Previous state and payload
+  Result: New state.
+*/
+export const addUpdatedMessageToStore = (state,payload) => {
+  const { conversationId, id } = payload;
+
+  return state.map((convo) => {
+
+    if (convo.id != conversationId) {
+      return convo
+    }
+    
+    const convoCopy = { ...convo };
+    convoCopy.messages = convoCopy.messages.map((message) => {
+      if (id.indexOf(message.id) >= 0) {
+        message.messageRead = true;
+      }
+      return message
+    })
+
+    return convoCopy
+  })
+}
+
+
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
