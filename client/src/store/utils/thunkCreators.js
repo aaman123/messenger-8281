@@ -7,6 +7,7 @@ import {
   setSearchedUsers,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
+import { setMessageStatuses } from '../conversations';
 
 axios.interceptors.request.use(async function (config) {
   const token = await localStorage.getItem("messenger-token");
@@ -125,3 +126,27 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
+
+/* 
+  Author: Aman Sutariya
+  Functionality - API interface for passing data to update messages in the database
+  Dependencies - Requires the conversation id and message IDS to be updated.
+*/
+const updateMessage = async(body) => {
+  const { data } = await axios.post(`/api/messages/setMessageStatus`, body)
+  return data;
+}
+
+/*
+  After successful message updation dispatches the setMessageStatuses reducer
+*/
+export const setMessageStatus = (body) => (dispatch) =>  {
+  try {
+      updateMessage(body)
+      .then(() => {
+        dispatch(setMessageStatuses(body.convoId, body.messageIds))
+      })
+  } catch (error) {
+    console.error(error);
+  }
+} 
